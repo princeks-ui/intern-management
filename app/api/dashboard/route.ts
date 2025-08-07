@@ -2,7 +2,6 @@ import { NextResponse } from "next/server"
 import { MongoClient, ObjectId } from "mongodb"
 
 const uri = "mongodb+srv://princechandrasen:pk06nVUcwGYa72Bt@intern.naqvmza.mongodb.net/"
-const client = new MongoClient(uri)
 
 const rewards = [
   { id: 1, name: "Bronze Fundraiser", description: "Raised $5,000", threshold: 5000, icon: "Medal" },
@@ -13,6 +12,7 @@ const rewards = [
 ]
 
 export async function GET(request: Request) {
+  let client
   try {
     const { searchParams } = new URL(request.url)
     const userId = searchParams.get("userId")
@@ -21,6 +21,12 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "User ID is required" }, { status: 400 })
     }
 
+    // Validate ObjectId format
+    if (!ObjectId.isValid(userId)) {
+      return NextResponse.json({ error: "Invalid user ID format" }, { status: 400 })
+    }
+
+    client = new MongoClient(uri)
     await client.connect()
     const db = client.db("internDashboard")
     const users = db.collection("users")
@@ -49,15 +55,15 @@ export async function GET(request: Request) {
         joinDate: user.joinDate,
       },
       stats: {
-        totalRaised: user.totalRaised,
-        referrals: user.referrals,
+        totalRaised: user.totalRaised || 0,
+        referrals: user.referrals || 0,
         rank: userRank,
         unlockedRewards: unlockedRewards.length,
         nextRewardThreshold: nextReward?.threshold || null,
       },
       rewards: rewards.map((reward) => ({
         ...reward,
-        unlocked: user.totalRaised >= reward.threshold,
+        unlocked: (user.totalRaised || 0) >= reward.threshold,
       })),
     }
 
@@ -66,6 +72,8 @@ export async function GET(request: Request) {
     console.error("Dashboard error:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   } finally {
-    await client.close()
+    if (client) {
+      await client.close()
+    }
   }
 }

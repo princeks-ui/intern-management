@@ -16,12 +16,12 @@ async function setupDatabase() {
     await users.deleteMany({})
     console.log("🧹 Cleared existing data")
 
-    // Create sample users with consistent data
+    // Create sample users with working credentials
     const sampleUsers = [
       {
         name: "Alex Johnson",
         email: "alex@company.com",
-        password: "password123", // In production, hash this
+        password: "password123",
         referralCode: "alexjohnson2025",
         totalRaised: 15750,
         referrals: 23,
@@ -73,6 +73,61 @@ async function setupDatabase() {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        name: "Jessica Wang",
+        email: "jessica@company.com",
+        password: "password123",
+        referralCode: "jessicawang2025",
+        totalRaised: 14200,
+        referrals: 21,
+        joinDate: new Date("2024-01-25").toISOString(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        name: "Ryan Thompson",
+        email: "ryan@company.com",
+        password: "password123",
+        referralCode: "ryanthompson2025",
+        totalRaised: 12800,
+        referrals: 18,
+        joinDate: new Date("2024-02-01").toISOString(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        name: "Lisa Anderson",
+        email: "lisa@company.com",
+        password: "password123",
+        referralCode: "lisaanderson2025",
+        totalRaised: 11500,
+        referrals: 16,
+        joinDate: new Date("2024-02-05").toISOString(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        name: "James Wilson",
+        email: "james@company.com",
+        password: "password123",
+        referralCode: "jameswilson2025",
+        totalRaised: 10200,
+        referrals: 14,
+        joinDate: new Date("2024-02-10").toISOString(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        name: "Maria Garcia",
+        email: "maria@company.com",
+        password: "password123",
+        referralCode: "mariagarcia2025",
+        totalRaised: 9800,
+        referrals: 12,
+        joinDate: new Date("2024-02-15").toISOString(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ]
 
     // Insert sample users
@@ -86,10 +141,19 @@ async function setupDatabase() {
     console.log("📊 Created database indexes")
 
     console.log("🎉 Database setup completed successfully!")
-    console.log("\n📝 Sample login credentials:")
+    console.log("\n" + "=".repeat(50))
+    console.log("📝 LOGIN CREDENTIALS:")
+    console.log("=".repeat(50))
     console.log("Email: alex@company.com")
     console.log("Password: password123")
-    console.log("\nOr create a new account through the signup form!")
+    console.log("")
+    console.log("Email: sarah@company.com")
+    console.log("Password: password123")
+    console.log("")
+    console.log("Email: michael@company.com")
+    console.log("Password: password123")
+    console.log("=".repeat(50))
+    console.log("✨ You can also create new accounts via signup!")
   } catch (error) {
     console.error("❌ Database setup error:", error)
   } finally {

@@ -2,8 +2,9 @@
 
 import { useState } from "react"
 import { LoginForm } from "@/components/login-form"
-import { Dashboard } from "@/components/dashboard"
+import { ModernDashboard } from "@/components/modern-dashboard"
 import { Toaster } from "@/components/ui/toaster"
+import { ThemeProvider } from "@/components/theme-provider"
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -20,9 +21,11 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {!isLoggedIn ? <LoginForm onLogin={handleLogin} /> : <Dashboard user={user} onLogout={handleLogout} />}
-      <Toaster />
-    </div>
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+      <div className="min-h-screen">
+        {!isLoggedIn ? <LoginForm onLogin={handleLogin} /> : <ModernDashboard user={user} onLogout={handleLogout} />}
+        <Toaster />
+      </div>
+    </ThemeProvider>
   )
 }

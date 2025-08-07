@@ -10,55 +10,64 @@ interface StatsChartProps {
 
 export function StatsChart({ user }: StatsChartProps) {
   const [chartData, setChartData] = useState([])
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    // Generate mock chart data
+    setMounted(true)
+    // Generate consistent chart data
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
     const data = months.map((month, index) => ({
       month,
-      raised: Math.floor(Math.random() * 5000) + 1000 + index * 500,
-      referrals: Math.floor(Math.random() * 10) + 2,
+      raised: 2000 + index * 800, // Consistent data instead of random
+      referrals: 5 + index * 2,
     }))
     setChartData(data)
   }, [])
 
+  if (!mounted) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Performance Analytics</h2>
+          <p className="text-gray-600">Loading your analytics...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-4xl font-bold text-white mb-2 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-          📊 Performance Analytics
-        </h2>
-        <p className="text-gray-300 text-lg">Track your fundraising journey over time</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">Performance Analytics</h2>
+        <p className="text-gray-600">Track your fundraising journey over time</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Monthly Progress Chart */}
-        <Card className="bg-white/5 backdrop-blur-md border-white/10 shadow-2xl">
+        <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-white">
-              <BarChart3 className="w-6 h-6 text-blue-400" />
+            <CardTitle className="flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-blue-600" />
               Monthly Fundraising
             </CardTitle>
-            <CardDescription className="text-gray-300">
-              Your fundraising progress over the last 6 months
-            </CardDescription>
+            <CardDescription>Your fundraising progress over the last 6 months</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {chartData.map((data, index) => (
-                <div key={data.month} className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
+                <div key={data.month} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <Calendar className="w-4 h-4 text-gray-400" />
-                    <span className="text-white font-medium">{data.month}</span>
+                    <Calendar className="w-4 h-4 text-gray-500" />
+                    <span className="font-medium">{data.month}</span>
                   </div>
                   <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2">
-                      <DollarSign className="w-4 h-4 text-green-400" />
-                      <span className="text-green-300">${data.raised.toLocaleString()}</span>
+                    <div className="flex items-center gap-1">
+                      <DollarSign className="w-4 h-4 text-green-600" />
+                      <span className="text-green-700 font-medium">${data.raised.toLocaleString()}</span>
                     </div>
-                    <div className="w-32 bg-white/10 rounded-full h-2">
+                    <div className="w-24 bg-gray-200 rounded-full h-2">
                       <div
-                        className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full transition-all duration-500"
+                        className="bg-blue-600 h-2 rounded-full transition-all duration-500"
                         style={{ width: `${(data.raised / 6000) * 100}%` }}
                       ></div>
                     </div>
@@ -70,42 +79,38 @@ export function StatsChart({ user }: StatsChartProps) {
         </Card>
 
         {/* Performance Metrics */}
-        <Card className="bg-white/5 backdrop-blur-md border-white/10 shadow-2xl">
+        <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-white">
-              <TrendingUp className="w-6 h-6 text-green-400" />
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-green-600" />
               Key Metrics
             </CardTitle>
-            <CardDescription className="text-gray-300">Your performance highlights</CardDescription>
+            <CardDescription>Your performance highlights</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-lg border border-green-500/20">
-                <div className="text-2xl font-bold text-green-400">${user.totalRaised?.toLocaleString() || "0"}</div>
-                <div className="text-sm text-green-200">Total Raised</div>
+              <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                <div className="text-2xl font-bold text-green-700">${user.totalRaised?.toLocaleString() || "0"}</div>
+                <div className="text-sm text-green-600">Total Raised</div>
               </div>
-              <div className="p-4 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-lg border border-blue-500/20">
-                <div className="text-2xl font-bold text-blue-400">{user.referrals || 0}</div>
-                <div className="text-sm text-blue-200">Referrals</div>
+              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="text-2xl font-bold text-blue-700">{user.referrals || 0}</div>
+                <div className="text-sm text-blue-600">Referrals</div>
               </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-gray-300">Average per month</span>
-                <span className="text-white font-medium">
-                  ${Math.floor((user.totalRaised || 0) / 6).toLocaleString()}
-                </span>
+                <span className="text-gray-600">Average per month</span>
+                <span className="font-medium">${Math.floor((user.totalRaised || 0) / 6).toLocaleString()}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-300">Best month</span>
-                <span className="text-white font-medium">
-                  ${Math.max(...chartData.map((d) => d.raised)).toLocaleString()}
-                </span>
+                <span className="text-gray-600">Best month</span>
+                <span className="font-medium">${Math.max(...chartData.map((d) => d.raised)).toLocaleString()}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-300">Growth rate</span>
-                <span className="text-green-400 font-medium">+24%</span>
+                <span className="text-gray-600">Growth rate</span>
+                <span className="text-green-600 font-medium">+24%</span>
               </div>
             </div>
           </CardContent>

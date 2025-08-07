@@ -21,18 +21,22 @@ import {
   Target,
   BarChart3,
   Sparkles,
+  ChevronUp,
+  Zap,
+  Activity,
 } from "lucide-react"
 import { Leaderboard } from "@/components/leaderboard"
 import { StatsChart } from "@/components/stats-chart"
 import { useToast } from "@/hooks/use-toast"
+import "../styles/dashboard.css"
 
 interface DashboardData {
   stats: {
     totalRaised: number
     referrals: number
     rank: number
-    unlockedRewards: number
     nextRewardThreshold?: number
+    unlockedRewards?: number
   }
   rewards: Array<{
     id: string
@@ -48,7 +52,7 @@ interface DashboardProps {
   onLogout: () => void
 }
 
-export function Dashboard({ user, onLogout }: DashboardProps) {
+export function ModernDashboard({ user, onLogout }: DashboardProps) {
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [mounted, setMounted] = useState(false)
@@ -57,6 +61,9 @@ export function Dashboard({ user, onLogout }: DashboardProps) {
   useEffect(() => {
     setMounted(true)
     fetchDashboardData()
+    
+    // Set dark theme by default
+    document.documentElement.classList.add('dark')
   }, [user])
 
   const fetchDashboardData = async () => {
@@ -86,10 +93,10 @@ export function Dashboard({ user, onLogout }: DashboardProps) {
 
   if (isLoading || !mounted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="dashboard-bg min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 text-lg">Loading your dashboard...</p>
+          <div className="w-16 h-16 border-4 border-purple-400/30 border-t-purple-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-slate-300 text-lg">Loading your dashboard...</p>
         </div>
       </div>
     )
@@ -100,26 +107,30 @@ export function Dashboard({ user, onLogout }: DashboardProps) {
     : 0
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+    <div className="dashboard-bg min-h-screen text-slate-200">
+      {/* Modern Header with glow effect */}
+      <header className="bg-[rgba(15,15,25,0.6)] backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-600/20">
+                <Sparkles className="w-5 h-5 text-white neon-icon" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Intern Dashboard</h1>
-                <p className="text-sm text-gray-600">Welcome back, {user.name}!</p>
+                <h1 className="text-xl font-bold text-white glow-text">Intern Dashboard</h1>
+                <p className="text-sm text-slate-100">Welcome back, {user.name}!</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <div className="text-right">
-                <p className="text-sm text-gray-500">Member since</p>
-                <p className="text-gray-900 font-medium">{formatDate(user.joinDate)}</p>
+              <div className="text-right hidden md:block">
+                <p className="text-sm text-slate-400">Member since</p>
+                <p className="text-purple-300 font-medium">{formatDate(user.joinDate)}</p>
               </div>
-              <Button variant="outline" onClick={onLogout} className="flex items-center gap-2 bg-transparent">
+              <Button 
+                variant="outline" 
+                onClick={onLogout} 
+                className="flex items-center gap-2 bg-transparent border-purple-500/30 text-purple-300 hover:bg-purple-500/20 hover:text-white hover:border-purple-500/50"
+              >
                 <LogOut className="w-4 h-4" />
                 Logout
               </Button>
@@ -130,76 +141,78 @@ export function Dashboard({ user, onLogout }: DashboardProps) {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-[500px]">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            <TabsTrigger value="rewards">Rewards</TabsTrigger>
-            <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
-          </TabsList>
+          <div className="modern-tabs">
+            <TabsList className="bg-transparent">
+              <TabsTrigger value="overview" className="modern-tab">Overview</TabsTrigger>
+              <TabsTrigger value="analytics" className="modern-tab">Analytics</TabsTrigger>
+              <TabsTrigger value="rewards" className="modern-tab">Rewards</TabsTrigger>
+              <TabsTrigger value="leaderboard" className="modern-tab">Leaderboard</TabsTrigger>
+            </TabsList>
+          </div>
 
-          <TabsContent value="overview" className="space-y-6">
+          <TabsContent value="overview" className="space-y-6 animated-bg">
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card className="bg-green-50 border-green-200">
+              <Card className="stat-card">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-green-800">Total Raised</CardTitle>
-                  <div className="p-2 bg-green-100 rounded-full">
-                    <DollarSign className="h-4 w-4 text-green-600" />
+                  <CardTitle className="text-sm font-medium text-purple-300">Total Raised</CardTitle>
+                  <div className="p-2 bg-[rgba(124,58,237,0.2)] rounded-full">
+                    <DollarSign className="h-4 w-4 text-purple-400 neon-icon" />
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-green-900">
+                  <div className="text-2xl font-bold text-white glow-text">
                     ${dashboardData?.stats?.totalRaised?.toLocaleString() || "0"}
                   </div>
-                  <p className="text-xs text-green-600 flex items-center gap-1 mt-1">
+                  <p className="text-xs text-green-400 flex items-center gap-1 mt-1">
                     <TrendingUp className="w-3 h-3" />
                     +12% from last month
                   </p>
                 </CardContent>
               </Card>
 
-              <Card className="bg-blue-50 border-blue-200">
+              <Card className="stat-card">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-blue-800">Referrals</CardTitle>
-                  <div className="p-2 bg-blue-100 rounded-full">
-                    <Users className="h-4 w-4 text-blue-600" />
+                  <CardTitle className="text-sm font-medium text-purple-300">Referrals</CardTitle>
+                  <div className="p-2 bg-[rgba(124,58,237,0.2)] rounded-full">
+                    <Users className="h-4 w-4 text-purple-400 neon-icon" />
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-blue-900">{dashboardData?.stats?.referrals || 0}</div>
-                  <p className="text-xs text-blue-600 flex items-center gap-1 mt-1">
-                    <Users className="w-3 h-3" />
+                  <div className="text-2xl font-bold text-white glow-text">{dashboardData?.stats?.referrals || 0}</div>
+                  <p className="text-xs text-green-400 flex items-center gap-1 mt-1">
+                    <ChevronUp className="w-3 h-3" />
                     +3 this week
                   </p>
                 </CardContent>
               </Card>
 
-              <Card className="bg-purple-50 border-purple-200">
+              <Card className="stat-card">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-purple-800">Rank</CardTitle>
-                  <div className="p-2 bg-purple-100 rounded-full">
-                    <Trophy className="h-4 w-4 text-purple-600" />
+                  <CardTitle className="text-sm font-medium text-purple-300">Rank</CardTitle>
+                  <div className="p-2 bg-[rgba(124,58,237,0.2)] rounded-full">
+                    <Trophy className="h-4 w-4 text-purple-400 neon-icon" />
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-purple-900">#{dashboardData?.stats?.rank || "N/A"}</div>
-                  <p className="text-xs text-purple-600 flex items-center gap-1 mt-1">
+                  <div className="text-2xl font-bold text-white glow-text">#{dashboardData?.stats?.rank || "N/A"}</div>
+                  <p className="text-xs text-green-400 flex items-center gap-1 mt-1">
                     <Crown className="w-3 h-3" />
                     Top performer
                   </p>
                 </CardContent>
               </Card>
 
-              <Card className="bg-orange-50 border-orange-200">
+              <Card className="stat-card">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-orange-800">Achievements</CardTitle>
-                  <div className="p-2 bg-orange-100 rounded-full">
-                    <Gift className="h-4 w-4 text-orange-600" />
+                  <CardTitle className="text-sm font-medium text-purple-300">Achievements</CardTitle>
+                  <div className="p-2 bg-[rgba(124,58,237,0.2)] rounded-full">
+                    <Gift className="h-4 w-4 text-purple-400 neon-icon" />
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-orange-900">{dashboardData?.stats?.unlockedRewards || 0}</div>
-                  <p className="text-xs text-orange-600 flex items-center gap-1 mt-1">
+                  <div className="text-2xl font-bold text-white glow-text">{dashboardData?.stats?.unlockedRewards || 0}</div>
+                  <p className="text-xs text-green-400 flex items-center gap-1 mt-1">
                     <Star className="w-3 h-3" />
                     Unlocked rewards
                   </p>
@@ -208,21 +221,21 @@ export function Dashboard({ user, onLogout }: DashboardProps) {
             </div>
 
             {/* Referral Code Card */}
-            <Card>
+            <Card className="card-glow">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Target className="w-5 h-5 text-blue-600" />
+                <CardTitle className="flex items-center gap-2 text-white">
+                  <Target className="w-5 h-5 text-purple-400" />
                   Your Referral Code
                 </CardTitle>
-                <CardDescription>Share this code to earn referral bonuses and climb the leaderboard</CardDescription>
+                <CardDescription className="text-slate-400">Share this code to earn referral bonuses and climb the leaderboard</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg border">
-                  <code className="text-lg font-mono font-bold text-blue-600 flex-1">{user.referralCode}</code>
+                <div className="flex items-center gap-4 p-4 bg-[rgba(15,15,25,0.5)] rounded-lg border border-purple-500/20">
+                  <code className="text-lg font-mono font-bold text-purple-300 flex-1">{user.referralCode}</code>
                   <Button
                     onClick={copyReferralCode}
                     size="sm"
-                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+                    className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 button-glow"
                   >
                     <Copy className="w-4 h-4" />
                     Copy
@@ -233,20 +246,25 @@ export function Dashboard({ user, onLogout }: DashboardProps) {
 
             {/* Progress Card */}
             {dashboardData?.stats?.nextRewardThreshold && (
-              <Card>
+              <Card className="card-glow">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <BarChart3 className="w-5 h-5 text-blue-600" />
+                  <CardTitle className="flex items-center gap-2 text-white">
+                    <BarChart3 className="w-5 h-5 text-purple-400" />
                     Progress to Next Reward
                   </CardTitle>
-                  <CardDescription>
+                  <CardDescription className="text-slate-400">
                     ${(dashboardData.stats.nextRewardThreshold - dashboardData.stats.totalRaised).toLocaleString()} more
                     to unlock your next achievement
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <Progress value={progressPercentage} className="h-3" />
-                  <div className="flex justify-between text-sm text-gray-600">
+                  <div className="progress-gradient relative h-3 rounded-full overflow-hidden">
+                    <div 
+                      className="absolute top-0 left-0 h-full bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600"
+                      style={{ width: `${progressPercentage}%` }}
+                    ></div>
+                  </div>
+                  <div className="flex justify-between text-sm text-slate-400">
                     <span>${dashboardData.stats.totalRaised.toLocaleString()}</span>
                     <span>${dashboardData.stats.nextRewardThreshold.toLocaleString()}</span>
                   </div>
@@ -256,13 +274,15 @@ export function Dashboard({ user, onLogout }: DashboardProps) {
           </TabsContent>
 
           <TabsContent value="analytics">
-            <StatsChart user={user} />
+            <Card className="card-glow p-4">
+              <StatsChart user={user} />
+            </Card>
           </TabsContent>
 
           <TabsContent value="rewards" className="space-y-6">
             <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Achievement Gallery</h2>
-              <p className="text-gray-600">Unlock amazing rewards as you reach new milestones</p>
+              <h2 className="text-2xl font-bold text-white glow-text mb-2">Achievement Gallery</h2>
+              <p className="text-slate-400">Unlock amazing rewards as you reach new milestones</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {dashboardData?.rewards?.map((reward) => {
@@ -279,38 +299,41 @@ export function Dashboard({ user, onLogout }: DashboardProps) {
                 return (
                   <Card
                     key={reward.id}
-                    className={`relative transition-all duration-300 hover:shadow-lg ${
-                      reward.unlocked ? "bg-yellow-50 border-yellow-200 shadow-md" : "bg-gray-50 border-gray-200"
+                    className={`relative transition-all duration-300 hover:shadow-lg card-glow ${
+                      reward.unlocked ? "border-purple-500/40" : "border-purple-500/10"
                     }`}
                   >
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <div className={`p-3 rounded-full ${reward.unlocked ? "bg-yellow-100" : "bg-gray-200"}`}>
+                        <div className={`p-3 rounded-full ${
+                          reward.unlocked 
+                            ? "bg-gradient-to-br from-purple-600 to-indigo-600" 
+                            : "bg-[rgba(15,15,25,0.6)]"
+                        }`}>
                           <IconComponent
-                            className={`w-6 h-6 ${reward.unlocked ? "text-yellow-600" : "text-gray-400"}`}
+                            className={`w-6 h-6 ${reward.unlocked ? "text-white neon-icon" : "text-slate-500"}`}
                           />
                         </div>
                         <Badge
-                          variant={reward.unlocked ? "default" : "secondary"}
                           className={
                             reward.unlocked
-                              ? "bg-green-100 text-green-800 border-green-200"
-                              : "bg-gray-100 text-gray-600 border-gray-200"
+                              ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white"
+                              : "bg-[rgba(15,15,25,0.4)] text-slate-400 border-slate-600/50"
                           }
                         >
                           {reward.unlocked ? "Unlocked" : "Locked"}
                         </Badge>
                       </div>
-                      <CardTitle className={`text-lg ${reward.unlocked ? "text-gray-900" : "text-gray-500"}`}>
+                      <CardTitle className={`text-lg ${reward.unlocked ? "text-white" : "text-slate-400"}`}>
                         {reward.name}
                       </CardTitle>
-                      <CardDescription className={reward.unlocked ? "text-gray-700" : "text-gray-400"}>
+                      <CardDescription className={reward.unlocked ? "text-slate-300" : "text-slate-500"}>
                         {reward.description}
                       </CardDescription>
                     </CardHeader>
                     {reward.unlocked && (
                       <div className="absolute top-3 right-3">
-                        <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <div className="w-6 h-6 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
                           <span className="text-white text-xs">✓</span>
                         </div>
                       </div>
@@ -322,7 +345,9 @@ export function Dashboard({ user, onLogout }: DashboardProps) {
           </TabsContent>
 
           <TabsContent value="leaderboard">
-            <Leaderboard currentUser={user} />
+            <Card className="card-glow p-4">
+              <Leaderboard currentUser={user} />
+            </Card>
           </TabsContent>
         </Tabs>
       </div>

@@ -2,10 +2,11 @@ import { NextResponse } from "next/server"
 import { MongoClient } from "mongodb"
 
 const uri = "mongodb+srv://princechandrasen:pk06nVUcwGYa72Bt@intern.naqvmza.mongodb.net/"
-const client = new MongoClient(uri)
 
 export async function GET() {
+  let client
   try {
+    client = new MongoClient(uri)
     await client.connect()
     const db = client.db("internDashboard")
     const users = db.collection("users")
@@ -14,18 +15,16 @@ export async function GET() {
     const leaderboard = await users
       .find({}, { projection: { password: 0 } }) // Exclude password field
       .sort({ totalRaised: -1 })
-      .limit(20)
+      .limit(20) // Get top 20 users
       .toArray()
 
-    return NextResponse.json({
-      success: true,
-      data: leaderboard,
-      lastUpdated: new Date().toISOString(),
-    })
+    return NextResponse.json(leaderboard)
   } catch (error) {
     console.error("Leaderboard error:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    return NextResponse.json({ error: "Failed to fetch leaderboard" }, { status: 500 })
   } finally {
-    await client.close()
+    if (client) {
+      await client.close()
+    }
   }
 }
