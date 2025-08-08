@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb"
 
-const uri = process.env.MONGODB_URI || "mongodb+srv://princechandrasen:pk06nVUcwGYa72Bt@intern.naqvmza.mongodb.net/"
+const uri = process.env.MONGODB_URI || ""
 const options = {
   ssl: true,
   tls: true,

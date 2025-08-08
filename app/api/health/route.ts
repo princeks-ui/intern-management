@@ -1,15 +1,9 @@
 import { NextResponse } from "next/server"
-import { MongoClient } from "mongodb"
-
-const uri = "mongodb+srv://princechandrasen:pk06nVUcwGYa72Bt@intern.naqvmza.mongodb.net/"
+import clientPromise from "@/lib/db/mongodb"
 
 export async function GET() {
-  let client
   try {
-    client = new MongoClient(uri)
-    await client.connect()
-
-    // Test database connection
+    const client = await clientPromise
     const db = client.db("internDashboard")
     const users = db.collection("users")
     const userCount = await users.countDocuments()
@@ -27,14 +21,10 @@ export async function GET() {
       {
         status: "ERROR",
         message: "Database connection failed",
-        error: error.message,
+        error: error instanceof Error ? error.message : "Unknown error",
         timestamp: new Date().toISOString(),
       },
       { status: 500 },
     )
-  } finally {
-    if (client) {
-      await client.close()
-    }
   }
 }

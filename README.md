@@ -1,7 +1,7 @@
 <!-- Modern Intern Management README.md -->
 
 <p align="center">
-  <img src="https://img.icons8.com/color/96/000000/management.png" alt="Intern Management Icon" width="96"/>
+  
   <h1 align="center">Intern Management System</h1>
   <p align="center">🚀 Efficiently manage your internship program with style and simplicity!</p>
 </p>
@@ -52,6 +52,9 @@ cd intern-management
 
 # Install dependencies
 npm install
+
+# Create a .env.local file with your MongoDB connection string
+echo "MONGODB_URI=your_mongodb_connection_string" > .env.local
 
 # Start the application
 npm start

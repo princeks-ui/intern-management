@@ -1,13 +1,9 @@
 import { NextResponse } from "next/server"
-import { MongoClient } from "mongodb"
-
-const uri = "mongodb+srv://princechandrasen:pk06nVUcwGYa72Bt@intern.naqvmza.mongodb.net/"
+import clientPromise from "@/lib/db/mongodb"
 
 export async function GET() {
-  let client
   try {
-    client = new MongoClient(uri)
-    await client.connect()
+    const client = await clientPromise
     const db = client.db("internDashboard")
     const users = db.collection("users")
 
@@ -22,9 +18,5 @@ export async function GET() {
   } catch (error) {
     console.error("Leaderboard error:", error)
     return NextResponse.json({ error: "Failed to fetch leaderboard" }, { status: 500 })
-  } finally {
-    if (client) {
-      await client.close()
-    }
   }
 }

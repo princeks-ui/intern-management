@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server"
-import { MongoClient, ObjectId } from "mongodb"
-
-const uri = "mongodb+srv://princechandrasen:pk06nVUcwGYa72Bt@intern.naqvmza.mongodb.net/"
+import { ObjectId } from "mongodb"
+import clientPromise from "@/lib/db/mongodb"
 
 const rewards = [
   { id: 1, name: "Bronze Fundraiser", description: "Raised $5,000", threshold: 5000, icon: "Medal" },
@@ -26,8 +25,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Invalid user ID format" }, { status: 400 })
     }
 
-    client = new MongoClient(uri)
-    await client.connect()
+    const client = await clientPromise
     const db = client.db("internDashboard")
     const users = db.collection("users")
 
@@ -71,9 +69,5 @@ export async function GET(request: Request) {
   } catch (error) {
     console.error("Dashboard error:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
-  } finally {
-    if (client) {
-      await client.close()
-    }
   }
 }

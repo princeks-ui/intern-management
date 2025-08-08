@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server"
-import { MongoClient, ObjectId } from "mongodb"
-
-const uri = "mongodb+srv://princechandrasen:pk06nVUcwGYa72Bt@intern.naqvmza.mongodb.net/"
+import { ObjectId } from "mongodb"
+import clientPromise from "@/lib/db/mongodb"
 
 export async function PUT(request: Request, { params }: { params: { userId: string } }) {
-  let client
   try {
     const { userId } = params
     const { totalRaised, referrals } = await request.json()
@@ -13,8 +11,7 @@ export async function PUT(request: Request, { params }: { params: { userId: stri
       return NextResponse.json({ error: "Invalid user ID format" }, { status: 400 })
     }
 
-    client = new MongoClient(uri)
-    await client.connect()
+    const client = await clientPromise
     const db = client.db("internDashboard")
     const users = db.collection("users")
 
@@ -44,9 +41,5 @@ export async function PUT(request: Request, { params }: { params: { userId: stri
   } catch (error) {
     console.error("Update stats error:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
-  } finally {
-    if (client) {
-      await client.close()
-    }
   }
 }
