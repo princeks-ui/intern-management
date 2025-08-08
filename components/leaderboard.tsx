@@ -10,8 +10,17 @@ interface LeaderboardProps {
   currentUser: any
 }
 
+interface InternData {
+  _id: string
+  name: string
+  email: string
+  avatar?: string
+  totalRaised?: number
+  referrals?: number
+}
+
 export function Leaderboard({ currentUser }: LeaderboardProps) {
-  const [leaderboardData, setLeaderboardData] = useState([])
+  const [leaderboardData, setLeaderboardData] = useState<InternData[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [mounted, setMounted] = useState(false)
 
@@ -92,8 +101,8 @@ export function Leaderboard({ currentUser }: LeaderboardProps) {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Hall of Fame</h2>
-        <p className="text-gray-600">The top fundraising champions in our program</p>
+        <h2 className="text-2xl font-bold text-gray-200 mb-2">Hall of Fame</h2>
+        <p className="text-gray-400">The top fundraising champions in our program</p>
       </div>
 
       <Card>
@@ -127,7 +136,7 @@ export function Leaderboard({ currentUser }: LeaderboardProps) {
 
                   <Avatar className="w-12 h-12">
                     <AvatarImage src={intern.avatar || "/placeholder.svg"} alt={intern.name} />
-                    <AvatarFallback className="bg-blue-100 text-blue-600 font-bold">
+                    <AvatarFallback className="bg-blue-500 text-blue-600 font-bold">
                       {intern.name
                         .split(" ")
                         .map((n) => n[0])
@@ -138,7 +147,7 @@ export function Leaderboard({ currentUser }: LeaderboardProps) {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <p
-                        className={`text-sm font-medium truncate ${isCurrentUser ? "text-blue-900" : "text-gray-900"}`}
+                        className={`text-sm font-medium truncate ${isCurrentUser ? "text-blue-900" : "text-gray-600"}`}
                       >
                         {intern.name}
                         {isCurrentUser && <span className="text-blue-600 ml-1">(You)</span>}
@@ -162,7 +171,7 @@ export function Leaderboard({ currentUser }: LeaderboardProps) {
                   <div className="text-right">
                     <div
                       className={`text-xl font-bold ${
-                        isCurrentUser ? "text-blue-600" : rank <= 3 ? "text-yellow-600" : "text-gray-900"
+                        isCurrentUser ? "text-blue-600" : rank <= 3 ? "text-yellow-600" : "text-gray-600"
                       }`}
                     >
                       #{rank}

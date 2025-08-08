@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import clientPromise from "@/lib/db/mongodb"
 import { handleMongoError } from "@/lib/db/error-handler"
+import { generateReferralCode } from "@/lib/utils/referral-code"
 
 export async function POST(request: Request) {
   try {
@@ -48,8 +49,12 @@ export async function POST(request: Request) {
       )
     }
 
-    // Generate referral code
-    const referralCode = `${name.toLowerCase().replace(/\s+/g, "")}2025`
+    // Get all existing referral codes
+    const allUsers = await users.find({}, { projection: { referralCode: 1 } }).toArray();
+    const existingCodes = allUsers.map(user => user.referralCode).filter(Boolean);
+
+    // Generate unique referral code
+    const referralCode = generateReferralCode(name, existingCodes);
 
     // Create new user with starter data
     const newUser = {
