@@ -30,6 +30,10 @@ const nextConfig = {
     // Enable memory cache
     memoryBasedWorkersCount: true,
   },
-}
+  webpack(config) {
+    // Remove Critters plugin to avoid compatibility issues
+    return config;
+  },
+};
 
-export default nextConfig
+export default nextConfig;
