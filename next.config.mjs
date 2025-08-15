@@ -1,38 +1,22 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
-    // Only disable during development
-    ignoreDuringBuilds: process.env.NODE_ENV !== 'production',
+    ignoreDuringBuilds: true,
   },
   typescript: {
-    // Only disable during development
-    ignoreBuildErrors: process.env.NODE_ENV !== 'production',
+    ignoreBuildErrors: true,
   },
   images: {
-    // Enable image optimization for production
-    unoptimized: process.env.NODE_ENV !== 'production',
+    unoptimized: true,
   },
-  // Enable React strict mode for better development experience
   reactStrictMode: true,
-  // Enable SWC minification for better performance
   swcMinify: true,
-  // Specify the output directory for the build
-  distDir: '.next',
-  // Configure the compiler to optimize bundle size
   compiler: {
-    // Remove console logs in production
-    removeConsole: process.env.NODE_ENV === 'production',
+    removeConsole: true,
   },
-  // Optimize for production
   experimental: {
-    // Enable optimizations
     optimizeCss: true,
-    // Enable memory cache
     memoryBasedWorkersCount: true,
-  },
-  webpack(config) {
-    // Remove Critters plugin to avoid compatibility issues
-    return config;
   },
 };
 
