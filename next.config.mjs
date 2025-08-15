@@ -18,6 +18,7 @@ const nextConfig = {
     optimizeCss: true,
     memoryBasedWorkersCount: true,
   },
+  // ✅ DO NOT include distDir or output here
 };
 
 export default nextConfig;
